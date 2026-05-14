@@ -1,0 +1,41 @@
+name: Jobs dan Steps
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  persiapan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cek environment
+        run: |
+          echo "=== INFO SISTEM ==="
+          echo "OS: $(uname -a)"
+          echo "User: $(whoami)"
+          echo "Direktori: $(pwd)"
+
+      - name: Simulasi persiapan
+        run: |
+          echo "Mempersiapkan environment..."
+          sleep 2
+          echo "Persiapan selesai!"
+
+  eksekusi:
+    runs-on: ubuntu-latest
+    needs: persiapan
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Simulasi eksekusi
+        run: |
+          echo "=== EKSEKUSI ==="
+          echo "Job persiapan sudah selesai"
+          echo "Sekarang jalankan tugas utama"
+          ls .github/workflows/
+
+      - name: Simulasi selesai
+        run: echo "Semua job selesai!"
