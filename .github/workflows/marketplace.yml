@@ -1,0 +1,34 @@
+name: Pakai Action Marketplace
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cek versi git
+        run: git --version
+
+      - name: Tampilkan struktur repo
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { execSync } = require('child_process');
+            const files = execSync('find . -not -path "./.git/*" -type f').toString();
+            console.log('=== File di repo ===');
+            console.log(files);
+
+      - name: Ringkasan hasil
+        run: |
+          echo "=== RINGKASAN ==="
+          echo "Nama repo : ${{ github.repository }}"
+          echo "Branch    : ${{ github.ref_name }}"
+          echo "Commit    : ${{ github.sha }}"
