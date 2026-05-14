@@ -1,0 +1,17 @@
+name: Hello World
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  sapa:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cetak pesan
+        run: echo "Halo! Workflow pertama berhasil jalan!"
+
+      - name: Cetak tanggal
+        run: date
