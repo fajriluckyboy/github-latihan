@@ -1,0 +1,19 @@
+name: Multi Event
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  info:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cetak info event
+        run: |
+          echo "Workflow jalan!"
+          echo "Dipicu oleh: ${{ github.event_name }}"
+          echo "Oleh user  : ${{ github.actor }}"
+          echo "Di repo    : ${{ github.repository }}"
