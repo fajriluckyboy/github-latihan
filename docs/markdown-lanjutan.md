@@ -43,6 +43,7 @@ Git adalah sistem version control[^1] yang dibuat oleh Linus Torvalds[^2].
 Rumus inline: $E = mc^2$
 
 Rumus blok:
+
 $$
 \sum_{i=1}^{n} x_i = x_1 + x_2 + ... + x_n
 $$
