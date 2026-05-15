@@ -1,0 +1,11 @@
+name: Caller - Panggil Reusable
+
+on:
+  workflow_dispatch:
+
+jobs:
+  panggil-reusable:
+    uses: ./.github/workflows/reusable-sapa.yml
+    with:
+      nama: fajriluckyboy
+      bahasa: Indonesia
