@@ -1,0 +1,25 @@
+name: Reusable - Sapa
+
+on:
+  workflow_call:
+    inputs:
+      nama:
+        description: 'Nama yang akan disapa'
+        required: true
+        type: string
+      bahasa:
+        description: 'Bahasa sapaan'
+        required: false
+        type: string
+        default: 'Indonesia'
+
+jobs:
+  sapa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sapa pengguna
+        run: |
+          echo "=== SAPAAN ==="
+          echo "Halo, ${{ inputs.nama }}!"
+          echo "Bahasa: ${{ inputs.bahasa }}"
+          echo "Dipanggil oleh workflow lain!"
