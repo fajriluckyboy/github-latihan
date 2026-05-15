@@ -1,0 +1,21 @@
+name: Matrix Strategy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-matrix:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        versi: [18, 20, 22]
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Info kombinasi
+        run: |
+          echo "=== KOMBINASI INI ==="
+          echo "Node versi : ${{ matrix.versi }}"
+          echo "OS         : ${{ matrix.os }}"
+          echo "Kombinasi  : Node ${{ matrix.versi }} di ${{ matrix.os }}"
