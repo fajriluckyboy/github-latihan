@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Unique Table</title>
+<style>
+body{background:#0f172a;font-family:Arial;display:flex;justify-content:center;padding:40px;color:white;}
+table{width:800px;border-collapse:collapse;overflow:hidden;border-radius:15px;background:#1e293b;box-shadow:0 0 20px rgba(0,0,0,.4);}
+th{background:linear-gradient(90deg,#06b6d4,#3b82f6);padding:15px;}
+td{padding:15px;border-bottom:1px solid #334155;}
+tr:hover{background:#334155;}
+span{padding:5px 10px;border-radius:20px;font-size:12px;}
+.active{background:green;}
+.pending{background:orange;}
+.blocked{background:red;}
+</style>
+</head>
+<body>
+<table>
+<tr><th>ID</th><th>Nama</th><th>Status</th></tr>
+<tr><td>1</td><td>Fajri</td><td><span class="active">Active</span></td></tr>
+<tr><td>2</td><td>Rina</td><td><span class="pending">Pending</span></td></tr>
+<tr><td>3</td><td>Akbar</td><td><span class="blocked">Blocked</span></td></tr>
+</table>
+</body>
+</html>
