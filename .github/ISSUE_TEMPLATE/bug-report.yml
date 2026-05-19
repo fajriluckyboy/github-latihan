@@ -1,0 +1,80 @@
+name: Bug Report
+description: Laporkan bug yang kamu temukan
+title: "[BUG] "
+labels: ["bug"]
+assignees: ["fajriluckyboy"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Terima kasih sudah melaporkan bug!
+        Mohon isi formulir berikut dengan lengkap.
+
+  - type: input
+    id: deskripsi
+    attributes:
+      label: Deskripsi Bug
+      description: Jelaskan bug dengan jelas dan singkat
+      placeholder: "Contoh: Tombol login tidak berfungsi"
+    validations:
+      required: true
+
+  - type: textarea
+    id: langkah
+    attributes:
+      label: Langkah Reproduksi
+      description: Langkah-langkah untuk mereproduksi bug
+      placeholder: |
+        1. Buka halaman login
+        2. Klik tombol login
+        3. Lihat error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: Apa yang seharusnya terjadi?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Tingkat Keparahan
+      options:
+        - Rendah
+        - Sedang
+        - Tinggi
+        - Kritis
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Saya sudah cek issue yang ada, belum ada yang sama
+          required: true
+        - label: Saya sudah coba reproduksi bug ini
+
+  - type: input
+    id: versi
+    attributes:
+      label: Versi
+      placeholder: "Contoh: v1.0.0"
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot & Log
+      description: |
+        Lampirkan screenshot atau log error di sini.
+        Drag & drop file langsung ke kotak ini.
+      placeholder: "Paste log error atau drag & drop screenshot di sini"
+    validations:
+      required: false
