@@ -13,3 +13,4 @@ commit 2 untuk squash
 commit 3 untuk squash
 commit rebase 1
 commit rebase 2
+# akhir dari catatan
