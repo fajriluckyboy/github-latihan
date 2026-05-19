@@ -67,3 +67,14 @@ body:
       placeholder: "Contoh: v1.0.0"
     validations:
       required: false
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot & Log
+      description: |
+        Lampirkan screenshot atau log error di sini.
+        Drag & drop file langsung ke kotak ini.
+      placeholder: "Paste log error atau drag & drop screenshot di sini"
+    validations:
+      required: false
