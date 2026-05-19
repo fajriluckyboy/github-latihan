@@ -85,3 +85,4 @@ pie title Progress Kurikulum Git & GitHub
 ## 📄 Lisensi
 
 Repo ini dibuat untuk tujuan pembelajaran. Bebas digunakan sebagai referensi.
+diperbarui
