@@ -1,0 +1,29 @@
+name: Sambutan Issue Baru
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  sambutan:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: Beri komentar sambutan
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueNumber = context.issue.number;
+            const pengirim = context.payload.issue.user.login;
+            const judulIssue = context.payload.issue.title;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: `Halo @${pengirim}! 👋\n\nTerima kasih sudah membuat issue **"${judulIssue}"**.\n\nIssue ini sudah kami terima dan akan segera ditinjau. Mohon tunggu respons dari tim kami.\n\n> Pesan ini dibuat otomatis via GitHub Actions + github-script`
+            });
+
+            core.info(`Komentar sambutan berhasil dikirim ke issue #${issueNumber}`);
