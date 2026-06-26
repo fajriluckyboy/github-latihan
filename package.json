@@ -1,0 +1,10 @@
+{
+  "name": "github-latihan-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Scripts otomasi untuk github-latihan",
+  "scripts": {},
+  "dependencies": {
+    "@octokit/action": "^6.0.0"
+  }
+}
