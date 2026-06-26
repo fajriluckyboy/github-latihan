@@ -1,0 +1,41 @@
+name: Auto Label Issue
+
+# Trigger saat issue baru dibuat
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    
+    # Izin minimal yang dibutuhkan untuk baca issue dan pasang label
+    permissions:
+      issues: write
+
+    steps:
+      # Checkout repo agar file script tersedia di runner
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Setup Node.js untuk jalankan script JavaScript
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # Install dependencies termasuk @octokit/action
+      - name: Install dependencies
+        run: npm install
+
+      # Jalankan script auto-label dengan env variables dari konteks event
+      - name: Jalankan auto-label
+        run: node .github/scripts/auto-label.js
+        env:
+          # Token otomatis dari Actions untuk autentikasi API
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Nomor issue yang baru dibuat
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          # Judul issue untuk dianalisis kata kuncinya
+          ISSUE_TITLE: ${{ github.event.issue.title }}
