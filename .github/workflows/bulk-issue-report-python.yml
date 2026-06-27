@@ -1,0 +1,41 @@
+name: Bulk Issue Report Python Mingguan
+
+# Jalankan otomatis setiap Senin jam 08.30 WIB (01.30 UTC)
+# Bisa juga dijalankan manual via workflow_dispatch
+on:
+  schedule:
+    - cron: "30 1 * * 1"
+  workflow_dispatch:    # tombol "Run workflow" manual di GitHub UI
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+
+    # Izin minimal: hanya perlu baca issues
+    permissions:
+      issues: read
+
+    steps:
+      # Checkout repo agar file script Python tersedia di runner
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Setup Python — berbeda dengan Node.js yang pakai setup-node
+      # Python sudah tersedia di ubuntu-latest tapi kita pin versinya
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      # Install library requests via pip
+      # Berbeda dengan Node.js yang pakai npm install
+      - name: Install dependencies
+        run: pip install requests
+
+      # Jalankan script Python
+      # Hasilnya akan muncul di log Actions
+      - name: Jalankan bulk issue report
+        run: python .github/scripts/bulk-issue-report.py
+        env:
+          # Token otomatis dari Actions untuk autentikasi API
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
