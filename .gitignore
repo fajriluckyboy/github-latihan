@@ -1,0 +1,10 @@
+# Dependency Node.js — jangan pernah di-commit
+# Bisa di-generate ulang dengan npm install
+node_modules/
+
+# File log dari npm
+npm-debug.log*
+
+# Environment variables lokal — berisi token/password
+.env
+.env.local
