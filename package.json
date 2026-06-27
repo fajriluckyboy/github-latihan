@@ -5,6 +5,7 @@
   "description": "Scripts otomasi untuk github-latihan",
   "scripts": {},
   "dependencies": {
-    "@octokit/action": "^6.0.0"
+    "@octokit/action": "^6.0.0",
+    "@octokit/rest": "^22.0.1"
   }
 }
