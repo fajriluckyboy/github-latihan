@@ -1,0 +1,42 @@
+name: Bulk Issue Report PyGithub Mingguan
+
+# Jalankan otomatis setiap Selasa jam 08.00 WIB (01.00 UTC)
+# Berbeda hari dari workflow Node.js dan requests yang keduanya Senin
+# Bisa juga dijalankan manual via workflow_dispatch
+on:
+  schedule:
+    - cron: "0 1 * * 2"
+  workflow_dispatch:    # tombol "Run workflow" manual di GitHub UI
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+
+    # Izin minimal: hanya perlu baca issues
+    permissions:
+      issues: read
+
+    steps:
+      # Checkout repo agar file script tersedia di runner
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Setup Python — pin ke versi 3.13 agar konsisten
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      # Install PyGithub via pip
+      # PyGithub secara otomatis install requests dan pynacl
+      # sebagai dependencynya
+      - name: Install dependencies
+        run: pip install PyGithub
+
+      # Jalankan script PyGithub
+      # Hasilnya akan muncul di log Actions
+      - name: Jalankan bulk issue report
+        run: python .github/scripts/bulk-issue-report-pygithub.py
+        env:
+          # Token otomatis dari Actions untuk autentikasi API
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
