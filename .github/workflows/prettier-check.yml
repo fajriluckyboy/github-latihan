@@ -1,0 +1,41 @@
+# Workflow untuk cek format kode otomatis menggunakan Prettier
+# Mode CHECK saja — hanya melaporkan, tidak mengubah file
+name: Prettier Format Check
+
+# Jalankan setiap ada PR yang menyentuh file JavaScript
+# atau Markdown di folder docs
+on:
+  pull_request:
+    paths:
+      - "docs/**/*.js"
+      - "docs/**/*.md"
+
+# Batasi permission token ke minimal yang dibutuhkan
+permissions:
+  contents: read
+
+jobs:
+  prettier-check:
+    runs-on: ubuntu-latest
+    steps:
+      # Ambil kode dari repo terlebih dahulu
+      - name: Checkout kode
+        uses: actions/checkout@v4
+
+      # Setup Node.js karena Prettier berjalan di atas Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Install Prettier secara global di runner
+      - name: Install Prettier
+        run: npm install --global prettier
+
+      # Jalankan Prettier dalam mode CHECK
+      # --check = cuma laporkan file yang belum rapi
+      # TIDAK mengubah file apapun
+      # workflow akan GAGAL (exit code error) kalau
+      # ada file yang belum sesuai format baku
+      - name: Cek format dengan Prettier
+        run: prettier --check "docs/**/*.js" "docs/**/*.md"
