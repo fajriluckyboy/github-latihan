@@ -16,6 +16,7 @@ flowchart TD
 ```
 
 ## 2. Sequence Diagram - Alur GitHub Actions
+
 ```mermaid
 sequenceDiagram
     participant D as Developer
@@ -46,7 +47,9 @@ gantt
     GitHub Actions   :done, 2025-05-01, 20d
     Simulasi Tim     :active, 2025-06-01, 20d
 ```
+
 ## 4. Git Graph - Visualisasi Branch
+
 ```mermaid
 gitGraph
     commit id: "first commit"
@@ -59,7 +62,9 @@ gitGraph
     merge feature-login id: "Merge PR"
     commit id: "hotfix bug"
 ```
+
 ## 5. Pie Chart - Progress Kurikulum
+
 ```mermaid
 pie title Progress Belajar Git dan GitHub
     "Selesai" : 85
