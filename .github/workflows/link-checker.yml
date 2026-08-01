@@ -1,0 +1,51 @@
+# Workflow untuk deteksi link mati otomatis di dokumentasi
+# menggunakan tool lychee (link checker berbasis Rust)
+name: Link Checker
+
+# Dua trigger berbeda untuk dua kebutuhan berbeda:
+on:
+  # 1. Cek saat ada PR yang menyentuh file markdown
+  #    supaya link baru yang ditambahkan kontributor
+  #    langsung diverifikasi sebelum masuk ke master
+  pull_request:
+    paths:
+      - "**/*.md"
+  # 2. Cek terjadwal setiap hari Minggu jam 02:00 UTC
+  #    karena link yang SUDAH ADA bisa mati kapan saja
+  #    meski tidak ada perubahan kode sama sekali
+  schedule:
+    - cron: "0 2 * * 0"
+  # Izinkan trigger manual dari tab Actions untuk testing
+  workflow_dispatch:
+
+# Batasi permission token ke minimal yang dibutuhkan
+permissions:
+  contents: read
+  issues: write # dibutuhkan untuk buat issue otomatis jika ada link mati
+
+jobs:
+  link-checker:
+    runs-on: ubuntu-latest
+    steps:
+      # Ambil kode dari repo terlebih dahulu
+      - name: Checkout kode
+        uses: actions/checkout@v4
+
+      # Jalankan lychee untuk scan seluruh file markdown
+      - name: Cek link dengan lychee
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # args: opsi tambahan untuk lychee
+          # --verbose = tampilkan detail lengkap di log
+          # --no-progress = matikan progress bar (tidak
+          #   cocok untuk log CI yang tidak interaktif)
+          # './docs/**/*.md' = hanya scan folder docs
+          args: --verbose --no-progress './docs/**/*.md'
+          # fail: false = workflow tidak digagalkan meski
+          # ada link mati ditemukan, cukup dilaporkan saja
+          fail: false
+        env:
+          # token dibutuhkan supaya lychee tidak kena rate
+          # limit saat cek link yang mengarah ke GitHub
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
