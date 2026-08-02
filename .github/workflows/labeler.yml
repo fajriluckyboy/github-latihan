@@ -1,0 +1,29 @@
+# Workflow untuk memberi label otomatis ke Pull Request
+# berdasarkan file yang diubah, menggunakan actions/labeler
+name: Auto Label PR
+
+# pull_request_target dipakai (bukan pull_request biasa)
+# karena action ini perlu izin menambahkan label,
+# termasuk untuk PR yang berasal dari fork kontributor luar
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+# Permission minimal: perlu izin baca isi PR dan tulis label
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  labeler:
+    runs-on: ubuntu-latest
+    steps:
+      # Action resmi GitHub untuk label otomatis berdasarkan
+      # file path yang diubah, sesuai aturan di labeler.yml
+      - name: Beri label berdasarkan file yang diubah
+        uses: actions/labeler@v5
+        with:
+          # token bawaan GitHub Actions untuk autentikasi
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          # path ke file konfigurasi aturan label
+          configuration-path: .github/labeler.yml
