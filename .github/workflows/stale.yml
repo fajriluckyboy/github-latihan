@@ -1,0 +1,67 @@
+# Workflow untuk menandai dan menutup otomatis issue/PR
+# yang sudah lama tidak ada aktivitas (stale)
+name: Close Stale Issues and PRs
+
+# Dua trigger:
+# schedule = jalan otomatis terjadwal setiap hari
+# workflow_dispatch = bisa dipicu manual untuk testing
+on:
+  schedule:
+    - cron: "0 3 * * *" # setiap hari jam 03:00 UTC
+  workflow_dispatch:
+
+# Permission minimal yang dibutuhkan untuk kelola
+# label dan menutup issue/PR
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tandai dan tutup issue/PR yang stale
+        uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # ================================
+          # KONFIGURASI UNTUK ISSUES
+          # ================================
+          # jumlah hari tanpa aktivitas sebelum ditandai stale
+          days-before-issue-stale: 30
+          # jumlah hari SETELAH ditandai stale sebelum ditutup
+          days-before-issue-close: 7
+          # label yang ditambahkan saat issue ditandai stale
+          stale-issue-label: "stale"
+          # pesan yang diposting saat issue ditandai stale
+          stale-issue-message: |
+            Issue ini otomatis ditandai sebagai **stale** karena
+            tidak ada aktivitas selama 30 hari terakhir.
+
+            Jika masih relevan, silakan beri komentar atau update,
+            atau issue ini akan ditutup otomatis dalam 7 hari.
+          # pesan yang diposting saat issue benar-benar ditutup
+          close-issue-message: |
+            Issue ini ditutup otomatis karena tidak ada aktivitas
+            lebih lanjut setelah ditandai stale. Silakan buka
+            issue baru jika masalah ini masih berlanjut.
+          # label yang MENGECUALIKAN issue dari proses stale
+          exempt-issue-labels: "pinned,prioritas-tinggi"
+
+          # ================================
+          # KONFIGURASI UNTUK PULL REQUESTS
+          # ================================
+          days-before-pr-stale: 30
+          days-before-pr-close: 7
+          stale-pr-label: "stale"
+          stale-pr-message: |
+            Pull request ini otomatis ditandai sebagai **stale**
+            karena tidak ada aktivitas selama 30 hari terakhir.
+
+            Jika masih dikerjakan, silakan update atau beri komentar,
+            atau PR ini akan ditutup otomatis dalam 7 hari.
+          close-pr-message: |
+            Pull request ini ditutup otomatis karena tidak ada
+            aktivitas lebih lanjut setelah ditandai stale.
+          exempt-pr-labels: "pinned"

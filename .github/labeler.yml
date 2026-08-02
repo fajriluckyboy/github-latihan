@@ -1,0 +1,24 @@
+# Konfigurasi aturan label otomatis berdasarkan file yang diubah
+# Digunakan oleh actions/labeler di workflow labeler.yml
+
+# Label "documentation" untuk perubahan di folder docs/
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: "docs/**"
+
+# Label "github-actions" untuk perubahan workflow CI/CD
+github-actions:
+  - changed-files:
+      - any-glob-to-any-file: ".github/workflows/**"
+
+# Label "dependencies" untuk perubahan file dependency
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "package.json"
+          - "package-lock.json"
+
+# Label "source-code" untuk perubahan di folder src/
+source-code:
+  - changed-files:
+      - any-glob-to-any-file: "src/**"
