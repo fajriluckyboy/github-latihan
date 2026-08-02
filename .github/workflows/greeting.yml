@@ -1,0 +1,51 @@
+# Workflow untuk menyambut kontributor yang membuat
+# issue atau pull request PERTAMA KALI di repo ini
+name: Greeting First-Time Contributors
+
+# Dua trigger berbeda:
+# issues (opened) = saat issue baru dibuat
+# pull_request_target (opened) = saat PR baru dibuat
+# pull_request_target dipakai (bukan pull_request biasa)
+# karena action ini perlu izin post komentar, termasuk
+# untuk PR yang berasal dari fork kontributor luar
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+# Permission minimal yang dibutuhkan:
+# issues: write untuk komentar di issue
+# pull-requests: write untuk komentar di PR
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+      # Action resmi GitHub untuk deteksi kontributor
+      # pertama kali dan post pesan sambutan otomatis
+      - name: Sambut kontributor baru
+        uses: actions/first-interaction@v1
+        with:
+          # token bawaan GitHub Actions untuk autentikasi
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          # pesan khusus untuk issue PERTAMA dari user baru
+          issue-message: |
+            👋 Halo! Terima kasih sudah membuat issue pertamamu di repo ini.
+
+            Sebelum tim kami tinjau lebih lanjut, silakan cek panduan kontribusi
+            di CONTRIBUTING.md untuk memastikan issue-mu sudah lengkap informasinya.
+
+            Kami sangat menghargai kontribusimu! 🙏
+          # pesan khusus untuk pull request PERTAMA dari user baru
+          pr-message: |
+            🎉 Selamat! Ini adalah pull request pertamamu di repo ini.
+
+            Terima kasih atas kontribusinya! Tim kami akan meninjau perubahan
+            yang kamu ajukan secepatnya. Pastikan semua checks sudah hijau
+            sebelum menunggu review ya.
+
+            Selamat datang di komunitas kontributor kami! 🚀
