@@ -23,7 +23,7 @@ jobs:
       # Setup Python — berbeda dengan Node.js yang pakai setup-node
       # Python sudah tersedia di ubuntu-latest tapi kita pin versinya
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.13"
 
