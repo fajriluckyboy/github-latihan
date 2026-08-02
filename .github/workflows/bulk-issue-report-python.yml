@@ -18,7 +18,7 @@ jobs:
     steps:
       # Checkout repo agar file script Python tersedia di runner
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Setup Python — berbeda dengan Node.js yang pakai setup-node
       # Python sudah tersedia di ubuntu-latest tapi kita pin versinya
