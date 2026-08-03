@@ -21,7 +21,7 @@ jobs:
       # Action resmi GitHub untuk label otomatis berdasarkan
       # file path yang diubah, sesuai aturan di labeler.yml
       - name: Beri label berdasarkan file yang diubah
-        uses: actions/labeler@v5
+        uses: actions/labeler@v7
         with:
           # token bawaan GitHub Actions untuk autentikasi
           repo-token: ${{ secrets.GITHUB_TOKEN }}
