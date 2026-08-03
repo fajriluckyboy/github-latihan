@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Update github-latihan</title>
+    <link>https://github.com/fajriluckyboy/github-latihan</link>
+    <description>Feed otomatis berisi release dan issue terbaru dari repo github-latihan</description>
+    <lastBuildDate>Mon, 03 Aug 2026 04:54:47 GMT</lastBuildDate>
+    <item>
+      <title>Release: Versi 2.0 - Latihan GitHub Lengkap</title>
+      <link>https://github.com/fajriluckyboy/github-latihan/releases/tag/v2.0</link>
+      <description>## Perubahan di v2.0
+- Menambah file kontribusi dari vajrieparadise
+- Setup Git LFS untuk file besar
+- Setup GPG signing untuk verified commit
+- Latihan fork dan pull request</description>
+      <pubDate>Fri, 01 May 2026 23:31:32 GMT</pubDate>
+      <guid>https://github.com/fajriluckyboy/github-latihan/releases/tag/v2.0</guid>
+    </item>
+    <item>
+      <title>Issue: Test: cek greeting action untuk kontributor</title>
+      <link>https://github.com/fajriluckyboy/github-latihan/issues/75</link>
+      <description>Status: open | Dibuat oleh: vajrieparadise</description>
+      <pubDate>Sun, 02 Aug 2026 00:19:43 GMT</pubDate>
+      <guid>https://github.com/fajriluckyboy/github-latihan/issues/75</guid>
+    </item>
+  </channel>
+</rss>
