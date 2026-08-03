@@ -1,21 +1,19 @@
 # Workflow untuk generate RSS feed otomatis dari release
-# dan issue terbaru, lalu commit hasilnya balik ke repo
+# dan issue terbaru, lalu buka Pull Request otomatis
+# (BUKAN commit langsung ke master, supaya tetap patuh
+# branch protection: wajib PR + wajib signed commit)
 name: Generate RSS Feed
 
 on:
-  # Jalan terjadwal setiap hari jam 04:00 UTC
   schedule:
     - cron: "0 4 * * *"
-  # Bisa dipicu manual untuk testing
   workflow_dispatch:
-  # Jalan otomatis setiap ada release baru dipublish
   release:
     types: [published]
 
-# Permission write dibutuhkan karena workflow ini
-# akan COMMIT perubahan balik ke repo
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   generate-feed:
@@ -33,29 +31,36 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Jalankan script yang sudah kita buat dan uji coba
-      # secara lokal — logic-nya SAMA PERSIS
       - name: Generate feed.xml
         run: node .github/scripts/generate-rss.cjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Setup identitas git untuk commit otomatis
-      # memakai identitas github-actions bot bawaan
-      - name: Setup git identity
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+      # Ganti dari commit+push manual menjadi PEMBUATAN PR
+      # otomatis. Action ini akan:
+      # 1. cek apakah ada perubahan di working directory
+      # 2. kalau ADA, buat branch baru otomatis
+      # 3. commit perubahan ke branch itu
+      # 4. push branch tersebut
+      # 5. buka Pull Request ke master
+      # Kalau TIDAK ADA perubahan, action ini otomatis
+      # skip tanpa melakukan apapun (tidak perlu kita
+      # cek manual seperti sebelumnya)
+      - name: Buat Pull Request untuk update feed.xml
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # commit-message: pesan commit di dalam PR
+          commit-message: "chore: update RSS feed otomatis"
+          # branch: nama branch baru yang akan dibuat
+          branch: auto/update-rss-feed
+          # title dan body: judul dan deskripsi PR
+          title: "chore: update RSS feed otomatis"
+          body: |
+            PR ini dibuat otomatis oleh workflow `rss-feed.yml`
+            untuk memperbarui `docs/feed.xml` berdasarkan
+            release dan issue terbaru di repo ini.
 
-      # Cek dulu apakah ADA perubahan di feed.xml
-      # supaya tidak bikin commit KOSONG kalau isinya
-      # sama persis dengan sebelumnya
-      - name: Commit dan push jika ada perubahan
-        run: |
-          if git diff --quiet docs/feed.xml; then
-            echo "Tidak ada perubahan pada feed.xml, skip commit."
-          else
-            git add docs/feed.xml
-            git commit -m "chore: update RSS feed otomatis"
-            git push
-          fi
+            Silakan review isi feed.xml sebelum approve dan merge.
+          # delete-branch: hapus branch otomatis setelah PR di-merge
+          delete-branch: true
