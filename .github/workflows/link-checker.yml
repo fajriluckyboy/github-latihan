@@ -29,7 +29,7 @@ jobs:
     steps:
       # Ambil kode dari repo terlebih dahulu
       - name: Checkout kode
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Jalankan lychee untuk scan seluruh file markdown
       - name: Cek link dengan lychee
