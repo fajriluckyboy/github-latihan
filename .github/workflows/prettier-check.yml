@@ -20,7 +20,7 @@ jobs:
     steps:
       # Ambil kode dari repo terlebih dahulu
       - name: Checkout kode
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Setup Node.js karena Prettier berjalan di atas Node.js
       - name: Setup Node.js
