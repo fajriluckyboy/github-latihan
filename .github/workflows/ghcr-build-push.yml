@@ -1,0 +1,43 @@
+# Nama workflow, muncul di tab Actions GitHub
+name: Build and Push Docker Image to GHCR
+# Trigger: jalan otomatis saat ada push
+# yang mengubah Dockerfile di branch manapun,
+# DAN bisa dipicu manual lewat tombol
+# "Run workflow" di GitHub Web UI
+on:
+  push:
+    paths:
+      - 'Dockerfile'
+  workflow_dispatch:
+# Izin eksplisit WAJIB, karena default
+# repo ini sudah diset READ-ONLY
+permissions:
+  contents: read
+  packages: write
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      # Ambil kode repo ke dalam runner
+      - name: Checkout kode
+        uses: actions/checkout@v4
+      # Login ke GHCR pakai token bawaan
+      # GITHUB_TOKEN, bukan PAT manual
+      - name: Login ke GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # Build image dari Dockerfile,
+      # lalu push langsung ke GHCR
+      # dengan dua tag: latest dan
+      # nomor commit SHA (untuk versi spesifik)
+      - name: Build dan push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/github-latihan-demo:latest
+            ghcr.io/${{ github.repository_owner }}/github-latihan-demo:${{ github.sha }}
