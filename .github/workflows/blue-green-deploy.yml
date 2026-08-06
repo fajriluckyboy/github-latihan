@@ -1,0 +1,41 @@
+# Nama workflow, muncul di tab Actions GitHub
+name: Blue-Green Deployment Simulation
+
+# Trigger MANUAL saja, karena deployment
+# adalah aksi yang harus DISENGAJA,
+# bukan otomatis setiap ada push
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Pilih target deploy: blue atau green'
+        required: true
+        type: choice
+        options:
+          - blue
+          - green
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # environment DIAMBIL dari input yang dipilih user
+    # saat trigger workflow, membuat GitHub mencatat
+    # riwayat deployment terpisah untuk blue dan green
+    environment: ${{ github.event.inputs.target }}
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v4
+
+      # Simulasi proses deploy: tampilkan info jelas
+      # di log, seolah-olah versi baru sedang
+      # "dipasang" ke environment yang dipilih
+      - name: Simulasi deploy ke environment
+        run: |
+          echo "=== SIMULASI BLUE-GREEN DEPLOYMENT ==="
+          echo "Deploy ke environment: ${{ github.event.inputs.target }}"
+          echo "Commit yang di-deploy: ${{ github.sha }}"
+          echo "Waktu deploy: $(date -u)"
+          echo "Status: BERHASIL disimulasikan"
