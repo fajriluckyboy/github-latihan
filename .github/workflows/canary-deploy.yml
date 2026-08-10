@@ -1,0 +1,101 @@
+# Workflow SIMULASI Canary Deployment
+# Baris berawalan "# REAL:" adalah KODE ASLI untuk
+# server sungguhan, SENGAJA dikomentari (tidak aktif).
+# Kalau nanti sudah punya server, hapus tanda # di
+# baris-baris itu, dan hapus/komentari baris simulasi
+# (echo/random) di atasnya sebagai gantinya.
+name: Canary Deployment Simulation
+
+on:
+  workflow_dispatch:
+    inputs:
+      persentase:
+        description: 'Persentase trafik ke versi baru'
+        required: true
+        type: choice
+        options:
+          - "5"
+          - "25"
+          - "50"
+          - "100"
+
+permissions:
+  contents: read
+
+jobs:
+  # Tahap 1: atur weight trafik ke persentase yang dipilih
+  set-canary-weight:
+    runs-on: ubuntu-latest
+    outputs:
+      persen: ${{ github.event.inputs.persentase }}
+    steps:
+      - name: Ubah weight trafik
+        run: |
+          echo "=== CANARY DEPLOYMENT ==="
+          echo "Mengatur trafik ke versi baru: ${{ github.event.inputs.persentase }}%"
+
+      # REAL: uses: appleboy/ssh-action@v1
+      # REAL: with:
+      # REAL:   host: ${{ secrets.SERVER_IP }}
+      # REAL:   username: ${{ secrets.SERVER_USER }}
+      # REAL:   key: ${{ secrets.SERVER_SSH_KEY }}
+      # REAL:   script: |
+      # REAL:     sudo sed -i "s/weight=[0-9]*;/weight=$((100 - ${{ github.event.inputs.persentase }}));/1" /etc/nginx/sites-available/app-canary.conf
+      # REAL:     sudo sed -i "0,/weight=[0-9]*;/! s/weight=[0-9]*;/weight=${{ github.event.inputs.persentase }};/" /etc/nginx/sites-available/app-canary.conf
+      # REAL:     sudo nginx -t
+      # REAL:     sudo systemctl reload nginx
+
+  # Tahap 2: amati metrik selama periode tertentu
+  observe-metrics:
+    needs: set-canary-weight
+    runs-on: ubuntu-latest
+    outputs:
+      error_rate: ${{ steps.simulasi.outputs.error_rate }}
+    steps:
+      - name: Simulasikan pengambilan metrik
+        id: simulasi
+        run: |
+          RANDOM_ERROR=$((RANDOM % 20))
+          echo "Simulasi error rate: $RANDOM_ERROR dari 1000 request"
+          echo "error_rate=$RANDOM_ERROR" >> "$GITHUB_OUTPUT"
+
+      # REAL: - name: Tunggu periode pengamatan
+      # REAL:   run: sleep 900
+
+      # REAL: - name: Ambil error rate dari server via SSH
+      # REAL:   id: simulasi
+      # REAL:   uses: appleboy/ssh-action@v1
+      # REAL:   with:
+      # REAL:     host: ${{ secrets.SERVER_IP }}
+      # REAL:     username: ${{ secrets.SERVER_USER }}
+      # REAL:     key: ${{ secrets.SERVER_SSH_KEY }}
+      # REAL:     script: |
+      # REAL:       ERROR_COUNT=$(grep -c "ERROR" /var/log/app-v2.log)
+      # REAL:       echo "error_rate=$ERROR_COUNT" >> "$GITHUB_OUTPUT"
+
+  # Tahap 3: keputusan lanjut atau rollback
+  decide:
+    needs: observe-metrics
+    runs-on: ubuntu-latest
+    steps:
+      - name: Putuskan lanjut atau rollback
+        run: |
+          ERROR="${{ needs.observe-metrics.outputs.error_rate }}"
+          echo "Error rate terdeteksi: $ERROR"
+          if [ "$ERROR" -lt "10" ]; then
+            echo "STATUS: SEHAT - aman lanjut ke tahap berikutnya"
+          else
+            echo "STATUS: BAHAYA - ROLLBACK ke versi lama"
+          fi
+
+      # REAL: - name: Rollback ke versi lama jika error tinggi
+      # REAL:   if: ${{ needs.observe-metrics.outputs.error_rate > 10 }}
+      # REAL:   uses: appleboy/ssh-action@v1
+      # REAL:   with:
+      # REAL:     host: ${{ secrets.SERVER_IP }}
+      # REAL:     username: ${{ secrets.SERVER_USER }}
+      # REAL:     key: ${{ secrets.SERVER_SSH_KEY }}
+      # REAL:     script: |
+      # REAL:       sudo sed -i "s/weight=[0-9]*;/weight=100;/1" /etc/nginx/sites-available/app-canary.conf
+      # REAL:       sudo sed -i "0,/weight=[0-9]*;/! s/weight=[0-9]*;/weight=0;/" /etc/nginx/sites-available/app-canary.conf
+      # REAL:       sudo systemctl reload nginx
