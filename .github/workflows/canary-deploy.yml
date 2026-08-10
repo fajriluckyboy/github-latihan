@@ -74,22 +74,49 @@ jobs:
       # REAL:       echo "error_rate=$ERROR_COUNT" >> "$GITHUB_OUTPUT"
 
   # Tahap 3: keputusan lanjut atau rollback
+  # PERUBAHAN dari versi sebelumnya: step "Putuskan" sekarang
+  # MENYIMPAN hasil ke output (bukan cuma echo), lalu DUA step
+  # terpisah (lanjut / rollback) akan jalan SECARA KONDISIONAL
+  # pakai "if:", supaya di log JELAS TERLIHAT step mana yang
+  # BENAR-BENAR tereksekusi
   decide:
     needs: observe-metrics
     runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.putuskan.outputs.status }}
     steps:
       - name: Putuskan lanjut atau rollback
+        id: putuskan
         run: |
           ERROR="${{ needs.observe-metrics.outputs.error_rate }}"
           echo "Error rate terdeteksi: $ERROR"
           if [ "$ERROR" -lt "10" ]; then
-            echo "STATUS: SEHAT - aman lanjut ke tahap berikutnya"
+            echo "status=sehat" >> "$GITHUB_OUTPUT"
           else
-            echo "STATUS: BAHAYA - ROLLBACK ke versi lama"
+            echo "status=bahaya" >> "$GITHUB_OUTPUT"
           fi
 
-      # REAL: - name: Rollback ke versi lama jika error tinggi
-      # REAL:   if: ${{ needs.observe-metrics.outputs.error_rate > 10 }}
+      # Step ini HANYA jalan kalau status = sehat
+      # (dilewati/skip total kalau kondisi tidak terpenuhi)
+      - name: Lanjut ke tahap berikutnya
+        if: steps.putuskan.outputs.status == 'sehat'
+        run: |
+          echo "STATUS: SEHAT"
+          echo "Aman lanjut ke persentase lebih besar."
+
+      # Step ini HANYA jalan kalau status = bahaya
+      # INI BAGIAN EKSEKUSI ROLLBACK SUNGGUHAN
+      # (simulasi di sini, REAL di komentar bawahnya)
+      - name: Eksekusi rollback
+        if: steps.putuskan.outputs.status == 'bahaya'
+        run: |
+          echo "STATUS: BAHAYA"
+          echo "Mengeksekusi ROLLBACK: mengembalikan trafik 100% ke versi lama"
+          echo "Trafik versi baru (canary) diset kembali ke 0%"
+          echo "ROLLBACK SELESAI - versi lama kini melayani seluruh trafik"
+
+      # REAL: - name: Eksekusi rollback ke server sungguhan
+      # REAL:   if: steps.putuskan.outputs.status == 'bahaya'
       # REAL:   uses: appleboy/ssh-action@v1
       # REAL:   with:
       # REAL:     host: ${{ secrets.SERVER_IP }}
@@ -98,4 +125,6 @@ jobs:
       # REAL:     script: |
       # REAL:       sudo sed -i "s/weight=[0-9]*;/weight=100;/1" /etc/nginx/sites-available/app-canary.conf
       # REAL:       sudo sed -i "0,/weight=[0-9]*;/! s/weight=[0-9]*;/weight=0;/" /etc/nginx/sites-available/app-canary.conf
+      # REAL:       sudo nginx -t
       # REAL:       sudo systemctl reload nginx
+      # REAL:       echo "Rollback SELESAI, verifikasi di https://aplikasimu.com"
