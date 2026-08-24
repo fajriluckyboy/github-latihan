@@ -27,6 +27,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Izinkan push tetap jalan walau ada file LFS
+      # yang objectnya hilang/rusak di sumber (INGAT
+      # kasus video-dummy.mp4 dari Sub-materi 1)
+      - name: Izinkan push walau LFS tidak lengkap
+        run: git config lfs.allowincompletepush true
+
       # Kirim SELURUH branch dan tag ke GitLab,
       # menggunakan token GitLab yang disisipkan
       # langsung di URL (oauth2:TOKEN@...)
