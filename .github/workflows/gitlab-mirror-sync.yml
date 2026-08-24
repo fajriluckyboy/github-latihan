@@ -26,12 +26,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          lfs: false
 
-      # Izinkan push tetap jalan walau ada file LFS
-      # yang objectnya hilang/rusak di sumber (INGAT
-      # kasus video-dummy.mp4 dari Sub-materi 1)
-      - name: Izinkan push walau LFS tidak lengkap
-        run: git config lfs.allowincompletepush true
+      # Nonaktifkan LFS smudge filter, supaya file
+      # video-dummy.mp4 diperlakukan sebagai pointer
+      # teks biasa, BUKAN dicoba di-upload lewat LFS
+      # yang objectnya sudah hilang dari sumber
+      - name: Nonaktifkan filter LFS
+        run: |
+          git config --global filter.lfs.smudge "git-lfs smudge --skip -- %f"
+          git config --global filter.lfs.process "git-lfs filter-process --skip"
 
       # Kirim SELURUH branch dan tag ke GitLab,
       # menggunakan token GitLab yang disisipkan
