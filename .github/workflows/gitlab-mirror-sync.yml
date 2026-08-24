@@ -1,0 +1,37 @@
+# Workflow untuk sinkronisasi otomatis SATU ARAH:
+# GitHub (sumber) -> GitLab (cermin/mirror)
+name: Sync to GitLab Mirror
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+  # Terjadwal setiap hari jam 02.00 UTC, sebagai
+  # jaring pengaman kalau ada perubahan yang
+  # terlewat dari trigger push
+  schedule:
+    - cron: '0 2 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  mirror-sync:
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth: 0 penting di sini, supaya SEMUA
+      # history dan branch ikut ter-checkout, bukan
+      # cuma commit terakhir
+      - name: Checkout kode LENGKAP
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Kirim SELURUH branch dan tag ke GitLab,
+      # menggunakan token GitLab yang disisipkan
+      # langsung di URL (oauth2:TOKEN@...)
+      - name: Push mirror ke GitLab
+        run: |
+          git remote add gitlab https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.com/fajriluckyboy/github-latihan-gitlab-mirror.git
+          git push gitlab --all --force
+          git push gitlab --tags --force
