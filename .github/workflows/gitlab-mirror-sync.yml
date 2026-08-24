@@ -22,12 +22,18 @@ jobs:
           fetch-depth: 0
           lfs: false
 
-      # Copot hook LFS sepenuhnya dari repo lokal ini,
-      # supaya git push TIDAK memicu proses upload LFS
-      # sama sekali - video-dummy.mp4 akan terkirim
-      # sebagai pointer teks biasa, bukan file LFS
-      - name: Uninstall LFS hooks
-        run: git lfs uninstall --local
+      # Install git-filter-repo, tool untuk hapus file
+      # dari SELURUH history secara permanen
+      - name: Install git-filter-repo
+        run: pip install git-filter-repo
+
+      # Hapus video-dummy.mp4 dari SELURUH commit history,
+      # KHUSUS di salinan runner ini (repo asli di GitHub
+      # TIDAK tersentuh sama sekali, karena ini cuma
+      # salinan sementara di dalam runner Actions)
+      - name: Hapus file LFS bermasalah dari history
+        run: |
+          git filter-repo --invert-paths --path video-dummy.mp4 --force
 
       - name: Push mirror ke GitLab
         run: |
