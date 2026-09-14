@@ -34,7 +34,7 @@ jobs:
       # dengan dua tag: latest dan
       # nomor commit SHA (untuk versi spesifik)
       - name: Build dan push image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: true
