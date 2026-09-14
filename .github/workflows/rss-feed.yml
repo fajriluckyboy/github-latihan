@@ -49,7 +49,7 @@ jobs:
       # skip tanpa melakukan apapun (tidak perlu kita
       # cek manual seperti sebelumnya)
       - name: Buat Pull Request untuk update feed.xml
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           # commit-message: pesan commit di dalam PR
