@@ -28,7 +28,7 @@ jobs:
       # Action resmi GitHub untuk deteksi kontributor
       # pertama kali dan post pesan sambutan otomatis
       - name: Sambut kontributor baru
-        uses: actions/first-interaction@v1
+        uses: actions/first-interaction@v3
         with:
           # token bawaan GitHub Actions untuk autentikasi
           repo-token: ${{ secrets.GITHUB_TOKEN }}
