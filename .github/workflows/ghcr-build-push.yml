@@ -24,7 +24,7 @@ jobs:
       # Login ke GHCR pakai token bawaan
       # GITHUB_TOKEN, bukan PAT manual
       - name: Login ke GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
